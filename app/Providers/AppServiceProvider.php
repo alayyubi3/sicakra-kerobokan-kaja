@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Models\KopLaporan;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Paksa HTTPS di production (Vercel berada di belakang proxy)
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         View::composer('*', function ($view): void {
             static $activeKop = null;
             static $checked = false;
